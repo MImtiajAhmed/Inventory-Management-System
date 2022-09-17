@@ -11,6 +11,14 @@ from django.contrib import messages
 @login_required
 def index(request):
     orders = Order.objects.all()
+    products = Product.objects.all()
+    
+    # counting things
+    item_count = Product.objects.all().count()
+    order_count = Order.objects.all().count()
+    workers_count = User.objects.all().count()
+    
+    
     if request.method=='POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -23,6 +31,11 @@ def index(request):
     context = {
         'orders': orders,
         'form': form,
+        'products': products,
+        'item_count' : item_count,
+        'order_count': order_count,
+        'workers_count' : workers_count,
+        
     }
     return render(request, 'dashboard/index.html', context)
 
@@ -31,8 +44,15 @@ def index(request):
 @login_required
 def staff(request):
     workers = User.objects.all()
+    workers_count = workers.count()
+    
+    item_count = Product.objects.all().count()
+    order_count = Order.objects.all().count()
     context = {
-        'workers': workers
+        'workers': workers,
+        'workers_count' : workers_count,
+        'item_count' : item_count,
+        'order_count': order_count,
     }
     return render(request, 'dashboard/staff.html', context)
 
@@ -53,7 +73,12 @@ def staff_detail(request, pk):
 @login_required
 def product(request):
     items = Product.objects.all()
+    item_count = items.count()
     # items = Product.objects.raw( 'SELECT * FROM dashboard_product')
+    workers_count = User.objects.all().count()
+    
+    order_count = Order.objects.all().count()
+    
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -67,6 +92,9 @@ def product(request):
     context = {
         'items': items,
         'form': form,
+        'item_count': item_count,
+        'workers_count' : workers_count,
+        'order_count': order_count,
     }
     return render(request, 'dashboard/product.html', context)
 
@@ -103,8 +131,15 @@ def product_update(request, pk):
 @login_required
 def order(request):
     orders = Order.objects.all()
+    order_count = orders.count()
+    
+    workers_count = User.objects.all().count()
+    item_count = Product.objects.all().count()
     
     context = {
         'orders':orders,
+        'order_count': order_count,
+        'workers_count': workers_count,
+        'item_count' : item_count,
     }
     return render(request, 'dashboard/order.html', context)
